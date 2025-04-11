@@ -1,6 +1,7 @@
+'use client'; // ✅ Add this if used inside app directory (for interactivity)
 
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import Link from "next/link"; // ✅ Replaces react-router-dom's Link
 
 interface EventCardProps {
   title: string;
@@ -13,7 +14,7 @@ interface EventCardProps {
 
 const EventCard = ({ title, description, image, date, type, path }: EventCardProps) => {
   return (
-    <Link to={path} className="block h-full">
+    <Link href={path} className="block h-full">
       <div className="glass-card overflow-hidden transition-all duration-500 hover:shadow-xl hover:-translate-y-1 h-full flex flex-col">
         <div className="relative h-48 overflow-hidden">
           <img
