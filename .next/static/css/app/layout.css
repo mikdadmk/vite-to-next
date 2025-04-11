@@ -2777,7 +2777,11 @@ video {
   animation-timing-function: linear;
 }
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+  
+ 
 
+  
 #root {
     max-width: 1280px;
     margin: 0 auto;
@@ -2820,8 +2824,6 @@ video {
   .read-the-docs {
     color: #888;
   }
-  
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
   
   .file\:border-0::file-selector-button {
   border-width: 0px;
