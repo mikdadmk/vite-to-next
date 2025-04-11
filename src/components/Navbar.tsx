@@ -1,5 +1,8 @@
+"use client";
+
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from './ThemeToggle';
 import { Menu } from 'lucide-react';
@@ -7,7 +10,8 @@ import { Menu } from 'lucide-react';
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const pathname = usePathname();
+  const router = useRouter();
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
@@ -16,11 +20,11 @@ const Navbar = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    
+
     // Check if user is logged in as admin
     const adminStatus = localStorage.getItem("isAdmin");
     setIsAdmin(!!adminStatus);
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -38,7 +42,7 @@ const Navbar = () => {
       scrolled ? 'bg-background/80 backdrop-blur-md shadow-md' : 'bg-transparent'
     }`}>
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <span className="font-display text-xl font-bold bg-gradient-to-r from-summit-gold-600 to-accent bg-clip-text text-transparent">
             GLOBAL<span className="text-foreground">SUMMIT</span>
           </span>
@@ -49,9 +53,9 @@ const Navbar = () => {
           {navLinks.map((link) => (
             <Link
               key={link.path}
-              to={link.path}
+              href={link.path}
               className={`relative font-medium text-sm transition-colors hover:text-primary ${
-                location.pathname === link.path
+                pathname === link.path
                   ? "text-primary after:content-[''] after:absolute after:left-0 after:bottom-[-5px] after:h-[2px] after:w-full after:bg-primary"
                   : "text-foreground/80"
               }`}
@@ -59,17 +63,17 @@ const Navbar = () => {
               {link.title}
             </Link>
           ))}
-          
+
           <div className="flex items-center gap-4">
             <ThemeToggle />
             {isAdmin ? (
-              <Link to="/admin/dashboard">
+              <Link href="/admin/dashboard">
                 <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6">
                   Admin Panel
                 </Button>
               </Link>
             ) : (
-              <Link to="/login">
+              <Link href="/login">
                 <Button className="bg-primary hover:bg-primary/90 text-white rounded-full px-6">
                   Login
                 </Button>
@@ -81,9 +85,9 @@ const Navbar = () => {
         {/* Mobile Navigation Toggle */}
         <div className="flex items-center gap-4 md:hidden">
           <ThemeToggle />
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="text-foreground"
           >
@@ -100,9 +104,9 @@ const Navbar = () => {
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
-                  to={link.path}
+                  href={link.path}
                   className={`py-2 font-medium transition-colors hover:text-primary ${
-                    location.pathname === link.path ? "text-primary" : "text-foreground/80"
+                    pathname === link.path ? "text-primary" : "text-foreground/80"
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -110,13 +114,13 @@ const Navbar = () => {
                 </Link>
               ))}
               {isAdmin ? (
-                <Link to="/admin/dashboard" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/admin/dashboard" onClick={() => setIsMenuOpen(false)}>
                   <Button className="mt-2 bg-primary hover:bg-primary/90 text-white rounded-full">
                     Admin Panel
                   </Button>
                 </Link>
               ) : (
-                <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/login" onClick={() => setIsMenuOpen(false)}>
                   <Button className="mt-2 bg-primary hover:bg-primary/90 text-white rounded-full">
                     Login
                   </Button>
