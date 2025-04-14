@@ -1,5 +1,4 @@
-
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Calendar } from "lucide-react";
 
 interface EventType {
@@ -27,7 +26,7 @@ const RelatedEvents = ({ events, currentEventId }: RelatedEventsProps) => {
       {relatedEvents.map((event) => (
         <Link 
           key={event.id} 
-          to={event.path || `/events/${event.id}`}
+          href={event.path || `/events/${event.id}`}
           className="glass-card p-4 hover:bg-primary/5 transition-colors"
         >
           <h3 className="font-semibold mb-2">{event.title}</h3>

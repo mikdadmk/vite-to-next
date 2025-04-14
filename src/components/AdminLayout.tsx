@@ -1,23 +1,23 @@
+'use client';
 
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useRouter, usePathname } from "next/navigation";
 import { 
   Calendar, Users, BarChart3, MessageSquare, 
   GalleryHorizontal, Settings, BookOpen, Menu, 
   LogOut, ExternalLink, LineChart, Info
 } from "lucide-react";
-import { useLocation } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import Link from "next/link";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
   title: string;
 }
 
-// Sample event data that would typically come from an API or context
 const upcomingEvents = [
   { 
     id: "event-1", 
@@ -42,22 +42,32 @@ const upcomingEvents = [
   }
 ];
 
+const formatDate = (dateString: string) => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC'
+  };
+  return new Intl.DateTimeFormat('en-GB', options).format(new Date(dateString));
+};
+
 const AdminLayout = ({ children, title }: AdminLayoutProps) => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isEventsPopoverOpen, setIsEventsPopoverOpen] = useState(false);
-  
+
   useEffect(() => {
     const isAdmin = localStorage.getItem("isAdmin");
     if (!isAdmin) {
-      navigate("/login");
+      router.push("/login");
     }
-  }, [navigate]);
+  }, [router]);
 
   const handleLogout = () => {
     localStorage.removeItem("isAdmin");
-    navigate("/login");
+    router.push("/login");
   };
 
   const menuItems = [
@@ -71,11 +81,6 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { path: "/admin/settings", label: "Settings", icon: <Settings className="w-5 h-5" /> },
   ];
 
-  const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString(undefined, options);
-  };
-
   const SidebarContent = () => (
     <>
       <div className="p-4 border-b border-gray-800 flex items-center justify-between">
@@ -86,9 +91,9 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
           {menuItems.map((item) => (
             <li key={item.path}>
               <Link
-                to={item.path}
+                href={item.path}
                 className={`flex items-center gap-3 px-4 py-3 rounded-md transition-colors ${
-                  location.pathname === item.path
+                  pathname === item.path
                     ? "bg-indigo-600/30 text-white"
                     : "text-gray-400 hover:bg-gray-800/50 hover:text-white"
                 }`}
@@ -100,8 +105,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             </li>
           ))}
         </ul>
-        
-        {/* Upcoming Events Section */}
+
         <div className="mt-8">
           <h3 className="px-4 text-sm font-semibold text-gray-400 uppercase tracking-wider">
             Upcoming Events
@@ -110,7 +114,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             {upcomingEvents.slice(0, 2).map((event) => (
               <Link
                 key={event.id}
-                to={`/admin/event-detail/${event.id}`}
+                href={`/admin/event-detail/${event.id}`}
                 className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800/50 hover:text-white rounded-md"
               >
                 <div className="font-medium truncate">{event.title}</div>
@@ -122,7 +126,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
             ))}
             {upcomingEvents.length > 2 && (
               <Link
-                to="/admin/events"
+                href="/admin/events"
                 className="block px-4 py-2 text-xs text-indigo-400 hover:text-indigo-300"
               >
                 View all events ({upcomingEvents.length})
@@ -133,7 +137,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
       </nav>
       <div className="p-4 border-t border-gray-800">
         <Link 
-          to="/" 
+          href="/" 
           className="w-full mb-3 px-4 py-2 text-sm flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 rounded-md transition-colors text-white"
         >
           <ExternalLink size={16} /> Return to Site
@@ -155,7 +159,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
         <SidebarContent />
       </div>
 
-      {/* Mobile Sidebar with Sheet */}
+      {/* Mobile Sidebar */}
       <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
         <SheetContent side="left" className="p-0 w-64 bg-gray-900 text-white border-r-0 border-gray-800">
           <SidebarContent />
@@ -177,8 +181,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
               </Button>
               <h1 className="text-xl font-bold text-white">{title}</h1>
             </div>
-            
-            {/* Quick Events Popover */}
+
             <Popover open={isEventsPopoverOpen} onOpenChange={setIsEventsPopoverOpen}>
               <PopoverTrigger asChild>
                 <Button 
@@ -203,7 +206,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
                       <div className="flex justify-between items-start">
                         <h4 className="font-medium">{event.title}</h4>
                         <Link 
-                          to={`/admin/event-detail/${event.id}`}
+                          href={`/admin/event-detail/${event.id}`}
                           className="text-xs text-indigo-400 hover:text-indigo-300"
                         >
                           Details
@@ -225,7 +228,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
                 </div>
                 <div className="p-3 border-t border-gray-700">
                   <Link 
-                    to="/admin/events" 
+                    href="/admin/events" 
                     className="block w-full text-center text-sm text-indigo-400 hover:text-indigo-300 py-1"
                   >
                     Manage All Events

@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, User, Tag, Users, ImagePlus, FilePlus, Edit, Eye, Trash2 } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import EventDetailForm from "@/components/EventDetailForm";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 
 interface EventDetailsViewProps {
@@ -21,7 +21,7 @@ const EventDetailsView = ({ eventId, isEditMode }: EventDetailsViewProps) => {
   const [isEventDetailOpen, setIsEventDetailOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
-  const navigate = useNavigate();
+  const router = useRouter();
   
   // Mock events data - in a real app this would come from an API call
   const events = [
@@ -84,7 +84,7 @@ const EventDetailsView = ({ eventId, isEditMode }: EventDetailsViewProps) => {
     
     // Redirect to events page after saving
     setTimeout(() => {
-      navigate("/admin/events");
+      router.push("/admin/events");
     }, 1500);
   };
 
@@ -108,7 +108,7 @@ const EventDetailsView = ({ eventId, isEditMode }: EventDetailsViewProps) => {
     
     // Redirect to events page after deleting
     setTimeout(() => {
-      navigate("/admin/events");
+      router.push("/admin/events");
     }, 1500);
   };
 
@@ -198,7 +198,7 @@ const EventDetailsView = ({ eventId, isEditMode }: EventDetailsViewProps) => {
                     className="flex-1 border-gray-700 hover:bg-gray-800 text-indigo-400"
                     onClick={(e) => {
                       e.stopPropagation();
-                      navigate(`/admin/event-detail/${event.id}/edit`);
+                      router.push(`/admin/event-detail/${event.id}/edit`);
                     }}
                   >
                     <Edit className="h-4 w-4 mr-1" /> Edit
@@ -298,7 +298,7 @@ const EventDetailsView = ({ eventId, isEditMode }: EventDetailsViewProps) => {
                 
                 <div className="pt-4 flex gap-3 justify-end">
                   <Button 
-                    onClick={() => navigate("/admin/events")} 
+                    onClick={() => router.push("/admin/events")} 
                     variant="outline" 
                     className="border-gray-700 hover:bg-gray-800 text-white"
                   >
@@ -428,7 +428,7 @@ const EventDetailsView = ({ eventId, isEditMode }: EventDetailsViewProps) => {
                   className="bg-indigo-600 hover:bg-indigo-700 text-white"
                   onClick={() => {
                     setIsEventDetailOpen(false);
-                    navigate(`/admin/event-detail/${selectedEvent.id}/edit`);
+                    router.push(`/admin/event-detail/${selectedEvent.id}/edit`);
                   }}
                 >
                   <Edit className="h-4 w-4 mr-2" /> Edit Event
